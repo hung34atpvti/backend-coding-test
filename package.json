@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "mocha tests",
-    "start": "node index.js"
+    "start": "node index.js",
+    "swagger-gen": "node swagger.js"
   },
   "keywords": [
     "Xendit"
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "mocha": "^6.1.4",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "swagger-autogen": "^2.19.0"
   }
 }

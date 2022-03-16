@@ -1,3 +1,28 @@
+<!--
+title: 'Node Express API'
+description: 'Node Express API'
+language: nodeJS
+authorLink: 'https://github.com/hung34atpvti'
+authorName: 'hung34atpvti'
+-->
+
+# Node Express API
+This app provides API for a transportation management system.
+
+## Prerequiste
+ - NodeJS `>8.6 and <= 10`
+ - npm installed
+
+## Running Scripts
+ - `npm install` 
+ - `npm start`
+
+## APIs
+ - Health: `http://localhost:8010/health`
+
+## Swagger (API documents)
+ Let see: `./swagger-output.json`
+
 # Xendit Coding Exercise
 
 The goal of these exercises are to assess your proficiency in software engineering that is related to the daily work that we do at Xendit. Please follow the instructions below to complete the assessment.
