@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const loggers = require('./src/loggers');
 const app = express();
 const port = 8010;
 
@@ -17,5 +18,5 @@ db.serialize(() => {
 
     const app = require('./src/app')(db);
 
-    app.listen(port, () => console.log(`App started and listening on port ${port}`));
+    app.listen(port, () => loggers.info(`App started and listening on port ${port}`));
 });
