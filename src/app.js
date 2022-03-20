@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const PaginationUtils = require('./utils/PaginationUtils');
 
 const app = express();
 const jsonParser = bodyParser.json();
@@ -102,7 +103,12 @@ module.exports = db => {
   });
 
   app.get('/rides', (req, res) => {
-    db.all('SELECT * FROM Rides', function(err, rows) {
+    const pageRequest = PaginationUtils.getPageRequest(req);
+    const { skip, limit } = pageRequest;
+    db.all('SELECT * FROM Rides LIMIT ? OFFSET ?', [limit, skip], function(
+      err,
+      rowsQuery
+    ) {
       if (err) {
         return res.send({
           error_code: 'SERVER_ERROR',
@@ -110,14 +116,27 @@ module.exports = db => {
         });
       }
 
-      if (rows.length === 0) {
+      if (rowsQuery.length === 0) {
         return res.send({
           error_code: 'RIDES_NOT_FOUND_ERROR',
           message: 'Could not find any rides'
         });
       }
 
-      res.send(rows);
+      db.all('SELECT COUNT(*) FROM Rides', function(error, rowsCount) {
+        if (error) {
+          return res.send({
+            error_code: 'SERVER_ERROR',
+            message: 'Unknown error'
+          });
+        }
+        const paginationResult = PaginationUtils.getPaginationResult(
+          rowsQuery,
+          rowsCount[0]['COUNT(*)'],
+          pageRequest
+        );
+        res.send(paginationResult);
+      });
     });
   });
 

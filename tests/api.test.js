@@ -1,5 +1,6 @@
 //eslint-disable-next-line
 const request = require('supertest');
+const assert = require('assert');
 
 const sqlite3 = require('sqlite3').verbose();
 
@@ -36,11 +37,35 @@ describe('API tests', () => {
   //eslint-disable-next-line
     describe('GET /rides', () => {
     //eslint-disable-next-line
-        it('should return 200 OK', done => {
+      it('should return 200 OK', done => {
       request(app)
         .get('/rides')
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200, done);
+    });
+    //eslint-disable-next-line
+      it('should return 200 OK paging', done => {
+      const body = {
+        start_lat: '-90',
+        start_long: '-180',
+        end_lat: '90',
+        end_long: '180',
+        rider_name: 'testDriver',
+        driver_name: 'testRider',
+        driver_vehicle: 'testVehicle'
+      };
+      request(app)
+        .post('/rides')
+        .send(body)
+        .then(() => {
+          request(app)
+            .get('/rides?page=0&limit=1')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(res => {
+              assert(res.body.totalItems === 1);
+            })
+            .expect(200, done);
+        });
     });
   });
 
