@@ -5,7 +5,7 @@ const assert = require('assert');
 const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database(':memory:');
-const { appConfig } = require('../src/app');
+const appConfig = require('../src/app');
 
 const app = appConfig(db);
 

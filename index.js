@@ -1,5 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
-const { appConfig } = require('./src/app');
+const appConfig = require('./src/app');
 const loggers = require('./src/loggers');
 
 const port = 8010;

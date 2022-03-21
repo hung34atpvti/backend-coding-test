@@ -1,31 +1,44 @@
 const PaginationUtils = require('../../../utils/PaginationUtils');
-const loggers = require('../../../loggers');
 
 async function createRide(reqRide, db) {
-  const {
-    startLatitude,
-    startLongitude,
-    endLatitude,
-    endLongitude,
-    riderName,
-    driverName,
-    driverVehicle
-  } = reqRide;
-  const values = [
-    startLatitude,
-    startLongitude,
-    endLatitude,
-    endLongitude,
-    riderName,
-    driverName,
-    driverVehicle
-  ];
-  loggers.info(values);
-  const rideSaved = await db.run(
-    'INSERT INTO Rides(startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    values
-  );
-  return db.all('SELECT * FROM Rides WHERE rideID = ?', rideSaved.lastID);
+  return new Promise((resolve, reject) => {
+    const {
+      startLatitude,
+      startLongitude,
+      endLatitude,
+      endLongitude,
+      riderName,
+      driverName,
+      driverVehicle
+    } = reqRide;
+    const values = [
+      startLatitude,
+      startLongitude,
+      endLatitude,
+      endLongitude,
+      riderName,
+      driverName,
+      driverVehicle
+    ];
+    db.run(
+      'INSERT INTO Rides(startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      values,
+      function(err) {
+        if (err) {
+          return reject(err);
+        }
+        db.all('SELECT * FROM Rides WHERE rideID = ?', this.lastID, function(
+          error,
+          rows
+        ) {
+          if (error) {
+            return reject(error);
+          }
+          return resolve(rows);
+        });
+      }
+    );
+  });
 }
 
 async function getRideWithPaging(pageRequest, db) {
@@ -59,12 +72,18 @@ async function getRides(pageRequest, db) {
     getRideWithPaging(pageRequest, db),
     getRideCount(db)
   ]);
-  console.log('count------------', count);
   return PaginationUtils.getPaginationResult(data, count, pageRequest);
 }
 
 async function getRideById(id, db) {
-  return db.all(`SELECT * FROM Rides WHERE rideID = ?`, id);
+  return new Promise((resolve, reject) => {
+    db.all(`SELECT * FROM Rides WHERE rideID = ?`, id, function(err, rows) {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(rows);
+    });
+  });
 }
 
 module.exports = {
