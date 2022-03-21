@@ -93,6 +93,34 @@ describe('API tests', () => {
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200, done);
     });
+    //eslint-disable-next-line
+    it('should return 200 OK Avoid SQL Injection', done => {
+      const body = {
+        start_lat: '-90',
+        start_long: '-180',
+        end_lat: '90',
+        end_long: '180',
+        rider_name: 'testDriver',
+        driver_name: 'testRider',
+        driver_vehicle: 'testVehicle'
+      };
+      request(app)
+        .post('/rides')
+        .send(body)
+        .then(() => {
+          request(app)
+            .get(`/rides/1 or 1=1`)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(
+              200,
+              {
+                error_code: 'RIDES_NOT_FOUND_ERROR',
+                message: 'Could not find any rides'
+              },
+              done
+            );
+        });
+    });
   });
 
   //eslint-disable-next-line
