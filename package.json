@@ -6,6 +6,9 @@
   "directories": {
     "test": "tests"
   },
+  "engines": {
+    "node": ">8.6.0"
+  },
   "scripts": {
     "test": "mocha tests",
     "start": "node index.js",

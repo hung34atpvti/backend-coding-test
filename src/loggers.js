@@ -23,17 +23,7 @@ logTransports.push(
   new transports.File({
     level: 'info',
     filename: './logs/info.log',
-    format: format.json({
-      replacer: (key, value) => {
-        if (key === 'info') {
-          return {
-            message: value.message,
-            stack: value.stack
-          };
-        }
-        return value;
-      }
-    })
+    format: format.json()
   })
 );
 
@@ -41,17 +31,7 @@ logTransports.push(
   new transports.File({
     level: 'error',
     filename: './logs/error.log',
-    format: format.json({
-      replacer: (key, value) => {
-        if (key === 'error') {
-          return {
-            message: value.message,
-            stack: value.stack
-          };
-        }
-        return value;
-      }
-    })
+    format: format.json()
   })
 );
 

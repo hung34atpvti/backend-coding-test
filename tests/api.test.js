@@ -67,6 +67,21 @@ describe('API tests', () => {
             .expect(200, done);
         });
     });
+
+    //eslint-disable-next-line
+      it('should return 200 OK paging ERR', done => {
+      request(app)
+        .get('/rides?page=a&limit=b')
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(
+          200,
+          {
+            error_code: 'SERVER_ERROR',
+            message: 'Unknown error'
+          },
+          done
+        );
+    });
   });
 
   //eslint-disable-next-line
