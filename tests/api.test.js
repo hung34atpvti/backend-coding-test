@@ -5,8 +5,10 @@ const assert = require('assert');
 const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database(':memory:');
+const { appConfig } = require('../src/app');
 
-const app = require('../src/app')(db);
+const app = appConfig(db);
+
 const buildSchemas = require('../src/schemas');
 //eslint-disable-next-line
 describe('API tests', () => {
@@ -37,11 +39,9 @@ describe('API tests', () => {
   //eslint-disable-next-line
     describe('GET /rides', () => {
     //eslint-disable-next-line
-      it('should return 200 OK', done => {
-      request(app)
-        .get('/rides')
-        .expect('Content-Type', 'application/json; charset=utf-8')
-        .expect(200, done);
+      it('should return 200 OK', async function() {
+      const res = await request(app).get('/rides');
+      assert(res.status === 200);
     });
     //eslint-disable-next-line
       it('should return 200 OK paging', done => {

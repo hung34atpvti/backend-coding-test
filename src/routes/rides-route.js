@@ -12,4 +12,4 @@ ridesRouter
   .post(jsonParser, validateCreateBody, ridesController.createRide);
 ridesRouter.route('/:id').get(ridesController.getRideById);
 
-module.exports = db => ridesRouter;
+module.exports = ridesRouter;

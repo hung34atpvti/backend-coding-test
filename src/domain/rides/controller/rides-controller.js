@@ -2,9 +2,10 @@ const ridesService = require('../service/rides-service');
 const PaginationUtils = require('../../../utils/PaginationUtils');
 const loggers = require('../../../loggers');
 
-exports.getRides = async (req, res, db) => {
+exports.getRides = async (req, res) => {
   try {
     loggers.info('[RidesController] getRides');
+    const { db } = req;
     const pageRequest = PaginationUtils.getPageRequest(req);
     const pagingRides = await ridesService.getRides(pageRequest, db);
     if (pagingRides.totalItems < 1) {
@@ -16,6 +17,7 @@ exports.getRides = async (req, res, db) => {
     return res.send(pagingRides);
   } catch (e) {
     loggers.error(e);
+    console.log(e);
     return res.send({
       error_code: 'SERVER_ERROR',
       message: 'Unknown error'
@@ -23,9 +25,10 @@ exports.getRides = async (req, res, db) => {
   }
 };
 
-exports.getRideById = async (req, res, db) => {
+exports.getRideById = async (req, res) => {
   try {
     loggers.info('[RidesController] getRideById');
+    const { db } = req;
     const rides = await ridesService.getRideById(req.params.id, db);
     if (rides.length < 1) {
       return res.send({
@@ -43,8 +46,10 @@ exports.getRideById = async (req, res, db) => {
   }
 };
 
-exports.createRide = async (req, res, db) => {
+exports.createRide = async (req, res) => {
   try {
+    loggers.info('[RidesController] create Ride');
+    const { db } = req;
     const startLatitude = Number(req.body.start_lat);
     const startLongitude = Number(req.body.start_long);
     const endLatitude = Number(req.body.end_lat);

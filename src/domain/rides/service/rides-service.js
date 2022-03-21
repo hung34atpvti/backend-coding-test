@@ -28,18 +28,39 @@ async function createRide(reqRide, db) {
   return db.all('SELECT * FROM Rides WHERE rideID = ?', rideSaved.lastID);
 }
 
-async function getRides(pageRequest, db) {
-  const { skip, limit } = pageRequest;
-  const [data, count] = await Promise.all([
-    db.all('SELECT * FROM Rides LIMIT ? OFFSET ?', [limit, skip]),
-    db.all('SELECT COUNT(*) FROM Rides')
-  ]);
+async function getRideWithPaging(pageRequest, db) {
+  return new Promise((resolve, reject) => {
+    const { skip, limit } = pageRequest;
+    db.all('SELECT * FROM Rides LIMIT ? OFFSET ?', [limit, skip], function(
+      error,
+      rowQuery
+    ) {
+      if (error) {
+        return reject(error);
+      }
+      return resolve(rowQuery);
+    });
+  });
+}
 
-  return PaginationUtils.getPaginationResult(
-    data,
-    count[0]['COUNT(*)'],
-    pageRequest
-  );
+async function getRideCount(db) {
+  return new Promise((resolve, reject) => {
+    db.all('SELECT COUNT(*) FROM Rides', function(error, rowCount) {
+      if (error) {
+        return reject(error);
+      }
+      return resolve(rowCount[0]['COUNT(*)']);
+    });
+  });
+}
+
+async function getRides(pageRequest, db) {
+  const [data, count] = await Promise.all([
+    getRideWithPaging(pageRequest, db),
+    getRideCount(db)
+  ]);
+  console.log('count------------', count);
+  return PaginationUtils.getPaginationResult(data, count, pageRequest);
 }
 
 async function getRideById(id, db) {
