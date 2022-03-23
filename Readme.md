@@ -23,6 +23,13 @@ This app provides API for a transportation management system.
 ## Swagger (API documents)
  Let see: `./swagger-output.json`
 
+## LOAD TEST
+- Using `artillery` to run load test.
+- Cause this library only run stable and don't get error with Node Version >=12. Tested in: `16.13.0`
+- Install Node Version `16.13.0` (Recommended) and run bellow script and get the result in `./load-test.json`:
+    + `npm run test:load`
+- Note: Before run load test need to run the server: `npm run start` 
+
 # Xendit Coding Exercise
 
 The goal of these exercises are to assess your proficiency in software engineering that is related to the daily work that we do at Xendit. Please follow the instructions below to complete the assessment.
